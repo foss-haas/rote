@@ -1,0 +1,15 @@
+{
+  "name": "rote",
+  "main": "./dist/rote.js",
+  "ignore": [
+    "**/.*",
+    "component.json",
+    "package.json",
+    "node_modules",
+    "coverage",
+    "npm-debug.log",
+    "templates",
+    "index.js",
+    "test"
+  ]
+}

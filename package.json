@@ -1,0 +1,48 @@
+{
+  "name": "rote",
+  "version": "0.0.0",
+  "description": "Simple isomorphic routing library.",
+  "main": "index.js",
+  "keywords": [
+    "router",
+    "routing"
+  ],
+  "files": [
+    "index.js",
+    "package.json",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "lint": "jshint index.js test",
+    "test": "npm run lint && mocha --growl -R spec",
+    "cover": "npm run lint && istanbul cover --report lcov _mocha -- -R spec",
+    "coveralls": "npm run cover && cat ./coverage/lcov.info | coveralls ; rm -rf ./coverage",
+    "dist": "npm run cjs-min; npm run globals-min; npm run amd-min",
+    "cjs": "cp index.js dist/rote.js",
+    "cjs-min": "npm run cjs; uglifyjs dist/rote.js > dist/rote.min.js",
+    "globals": "cat templates/globals.before index.js templates/globals.after > dist/rote.globals.js",
+    "globals-min": "npm run globals; uglifyjs dist/rote.globals.js > dist/rote.globals.min.js",
+    "amd": "cat templates/amd.before index.js templates/amd.after > dist/rote.amd.js",
+    "amd-min": "npm run amd; uglifyjs dist/rote.amd.js > dist/rote.amd.min.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/foss-haas/rote.git"
+  },
+  "author": "Alan Plum <me@pluma.io>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/foss-haas/rote/issues"
+  },
+  "homepage": "https://github.com/foss-haas/rote",
+  "devDependencies": {
+    "coveralls": "^2.11.2",
+    "expect.js": "^0.3.1",
+    "istanbul": "^0.3.2",
+    "jshint": "^2.5.6",
+    "mocha": "^2.0.1",
+    "uglify-js": "^2.4.15"
+  },
+  "dependencies": {}
+}
