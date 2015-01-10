@@ -173,6 +173,11 @@ describe('rote()', function () {
         }).to.throwError(function (e) {
           expect(e.message).to.contain('qwertz');
         });
+        expect(function () {
+          router.reverse(name);
+        }).to.throwError(function (e) {
+          expect(e.message).to.contain('qwertz');
+        });
       });
       it('throws an error if the wildcard is unmatched', function () {
         var name = 'lol';
