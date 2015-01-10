@@ -2,8 +2,6 @@
 
 **rote** is a simple routing library for the browser and the server.
 
-**NOTICE:** This library is currently work in progress. The `resolve` function hasn't been implemented yet, making this library mostly useless. You might want to come back later.
-
 [![license - MIT](https://img.shields.io/npm/l/rote.svg)](http://foss-haas.mit-license.org) [![Dependencies](https://img.shields.io/david/foss-haas/rote.svg)](https://david-dm.org/foss-haas/rote)
 
 [![NPM status](https://nodei.co/npm/rote.png?compact=true)](https://www.npmjs.com/package/rote)
