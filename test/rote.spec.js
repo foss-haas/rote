@@ -46,25 +46,6 @@ describe('rote()', function () {
       });
     });
   });
-  describe('resolve next', function () {
-    it('returns matches in the correct order', function () {
-      var handler1 = function () {};
-      var handler2 = function () {};
-      var path = '/path';
-      router.add(path, handler1);
-      router.add(path, handler2);
-      var result = router.resolve(path);
-      expect(result).to.be.ok();
-      expect(result.fn).to.be(handler1);
-      expect(result.next).to.be.a('function');
-      result = result.next();
-      expect(result).to.be.ok();
-      expect(result.fn).to.be(handler2);
-      expect(result.next).to.be.a('function');
-      result = result.next();
-      expect(result).to.be(null);
-    });
-  });
   var goodExamples = [
     ['/', ['$'], {'/': [{}, null]}],
     ['/*', ['*'], {
@@ -181,6 +162,30 @@ describe('rote()', function () {
     }]
   ];
   describe('reverse', function () {
+    describe('with invalid input', function () {
+      it('throws an error if a param is missing', function () {
+        var name = 'lol';
+        router.add('/:qwertz', function () {}, name);
+        expect(router.reverse(name, {qwertz: 'foo'}, null)).to.be.ok();
+        expect(router.reverse(name, {qwertz: 'foo'})).to.be.ok();
+        expect(function () {
+          router.reverse(name, {}, null);
+        }).to.throwError(function (e) {
+          expect(e.message).to.contain('qwertz');
+        });
+      });
+      it('throws an error if the wildcard is unmatched', function () {
+        var name = 'lol';
+        router.add('/*', function () {}, name);
+        expect(router.reverse(name, {}, 'foo')).to.be.ok();
+        expect(router.reverse(name, undefined, 'foo')).to.be.ok();
+        expect(function () {
+          router.reverse(name, {}, null);
+        }).to.throwError(function (e) {
+          expect(e.message.toLowerCase()).to.contain('wildcard');
+        });
+      });
+    });
     goodExamples.forEach(spread(function (route, tokens, matches) {
       Object.keys(matches).forEach(function (path) {
         if (path.length > 1 && path.slice(-1) === '/') path = path.slice(0, -1);
@@ -196,6 +201,25 @@ describe('rote()', function () {
     }));
   });
   describe('resolve', function () {
+    describe('next', function () {
+      it('returns matches in the correct order', function () {
+        var handler1 = function () {};
+        var handler2 = function () {};
+        var path = '/path';
+        router.add(path, handler1);
+        router.add(path, handler2);
+        var result = router.resolve(path);
+        expect(result).to.be.ok();
+        expect(result.fn).to.be(handler1);
+        expect(result.next).to.be.a('function');
+        result = result.next();
+        expect(result).to.be.ok();
+        expect(result.fn).to.be(handler2);
+        expect(result.next).to.be.a('function');
+        result = result.next();
+        expect(result).to.be(null);
+      });
+    });
     goodExamples.forEach(spread(function (route, tokens, matches) {
       Object.keys(matches).forEach(function (path) {
         it(route + ' matches ' + path, function () {

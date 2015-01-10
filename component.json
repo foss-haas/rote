@@ -1,6 +1,6 @@
 {
   "name": "rote",
-  "repo": "foss-haas/rote",
+  "repository": "foss-haas/rote",
   "description": "Simple isomorphic routing library.",
   "license": "MIT",
   "keywords": [

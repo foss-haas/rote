@@ -25,6 +25,44 @@ npm install
 npm run dist
 ```
 
+## With component
+
+```sh
+component install foss-haas/rote
+```
+
+[Learn more about component](https://github.com/component/component).
+
+## With bower
+
+```sh
+bower install rote
+```
+
+[Learn more about bower](https://github.com/twitter/bower).
+
+## With a CommonJS module loader
+
+Download the [latest minified CommonJS release](https://raw.github.com/foss-haas/rote/master/dist/rote.min.js) and add it to your project.
+
+[Learn more about CommonJS modules](http://wiki.commonjs.org/wiki/Modules/1.1).
+
+## With an AMD module loader
+
+Download the [latest minified AMD release](https://raw.github.com/foss-haas/rote/master/dist/rote.amd.min.js) and add it to your project.
+
+[Learn more about AMD modules](http://requirejs.org/docs/whyamd.html).
+
+## As a standalone browser bundle
+
+Download the [latest minified standalone release](https://raw.github.com/foss-haas/rote/master/dist/rote.globals.min.js) and add it to your project.
+
+```html
+<script src="/your/js/path/rote.globals.min.js"></script>
+```
+
+This makes the `rote` module available in the global namespace.
+
 # Usage example
 
 ```js
