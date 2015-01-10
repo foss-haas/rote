@@ -1,4 +1,5 @@
 {
+    "sub": true,
     "curly": false,
     "eqeqeq": true,
     "globalstrict": true,
