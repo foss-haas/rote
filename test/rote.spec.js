@@ -65,122 +65,137 @@ describe('rote()', function () {
       expect(result).to.be(null);
     });
   });
+  var goodExamples = [
+    ['/', ['$'], {'/': [{}, null]}],
+    ['/*', ['*'], {
+      '/foo': [{}, 'foo'],
+      '/bar': [{}, 'bar'],
+      '/foo/bar/qux': [{}, 'foo/bar/qux'],
+      '/foo/': [{}, 'foo'],
+      '/bar/': [{}, 'bar'],
+      '/foo/bar/qux/': [{}, 'foo/bar/qux']
+    }],
+    ['/:foo', [':', '$'], {
+      '/foo': [{foo: 'foo'}, null],
+      '/bar': [{foo: 'bar'}, null],
+      '/qux': [{foo: 'qux'}, null],
+      '/foo/': [{foo: 'foo'}, null],
+      '/bar/': [{foo: 'bar'}, null],
+      '/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/:foo/', [':', '$'], {
+      '/foo': [{foo: 'foo'}, null],
+      '/bar': [{foo: 'bar'}, null],
+      '/qux': [{foo: 'qux'}, null],
+      '/foo/': [{foo: 'foo'}, null],
+      '/bar/': [{foo: 'bar'}, null],
+      '/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/qux', ['"qux', '$'], {
+      '/qux': [{}, null],
+      '/qux/': [{}, null]
+    }],
+    ['/qux/', ['"qux', '$'], {
+      '/qux': [{}, null],
+      '/qux/': [{}, null]
+    }],
+    ['/qux/*', ['"qux', '*'], {
+      '/qux/foo': [{}, 'foo'],
+      '/qux/bar': [{}, 'bar'],
+      '/qux/foo/bar/qux': [{}, 'foo/bar/qux'],
+      '/qux/foo/': [{}, 'foo'],
+      '/qux/bar/': [{}, 'bar'],
+      '/qux/foo/bar/qux/': [{}, 'foo/bar/qux']
+    }],
+    ['/qux/foo', ['"qux', '"foo', '$'], {
+      '/qux/foo': [{}, null],
+      '/qux/foo/': [{}, null]
+    }],
+    ['/qux/foo/', ['"qux', '"foo', '$'], {
+      '/qux/foo': [{}, null],
+      '/qux/foo/': [{}, null]
+    }],
+    ['/qux/:foo', ['"qux', ':', '$'], {
+      '/qux/foo': [{foo: 'foo'}, null],
+      '/qux/bar': [{foo: 'bar'}, null],
+      '/qux/qux': [{foo: 'qux'}, null],
+      '/qux/foo/': [{foo: 'foo'}, null],
+      '/qux/bar/': [{foo: 'bar'}, null],
+      '/qux/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/qux/:foo/', ['"qux', ':', '$'], {
+      '/qux/foo': [{foo: 'foo'}, null],
+      '/qux/bar': [{foo: 'bar'}, null],
+      '/qux/qux': [{foo: 'qux'}, null],
+      '/qux/foo/': [{foo: 'foo'}, null],
+      '/qux/bar/': [{foo: 'bar'}, null],
+      '/qux/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/:qux/*', [':', '*'], {
+      '/qux/foo': [{qux: 'qux'}, 'foo'],
+      '/qux/bar': [{qux: 'qux'}, 'bar'],
+      '/qux/foo/bar/qux': [{qux: 'qux'}, 'foo/bar/qux'],
+      '/qux/foo/': [{qux: 'qux'}, 'foo'],
+      '/qux/bar/': [{qux: 'qux'}, 'bar'],
+      '/qux/foo/bar/qux/': [{qux: 'qux'}, 'foo/bar/qux']
+    }],
+    ['/:qux/foo', [':', '"foo', '$'], {
+      '/qux/foo': [{qux: 'qux'}, null],
+      '/qux/foo/': [{qux: 'qux'}, null]
+    }],
+    ['/:qux/foo/', [':', '"foo', '$'], {
+      '/qux/foo': [{qux: 'qux'}, null],
+      '/qux/foo/': [{qux: 'qux'}, null]
+    }],
+    ['/:qux/:foo', [':', ':', '$'], {
+      '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux': [{qux: 'qux', foo: 'qux'}, null],
+      '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
+    }],
+    ['/:qux/:foo/', [':', ':', '$'], {
+      '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux': [{qux: 'qux', foo: 'qux'}, null],
+      '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
+    }],
+    ['/:foo/:foo', [':', ':', '$'], {
+      '/qux/foo': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux': [{foo: ['qux', 'qux']}, null],
+      '/qux/foo/': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar/': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux/': [{foo: ['qux', 'qux']}, null]
+    }],
+    ['/:foo/:foo/', [':', ':', '$'], {
+      '/qux/foo': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux': [{foo: ['qux', 'qux']}, null],
+      '/qux/foo/': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar/': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux/': [{foo: ['qux', 'qux']}, null]
+    }]
+  ];
+  describe('reverse', function () {
+    goodExamples.forEach(spread(function (route, tokens, matches) {
+      Object.keys(matches).forEach(function (path) {
+        if (path.length > 1 && path.slice(-1) === '/') path = path.slice(0, -1);
+        it(route + ' reverses to ' + path, function () {
+          var name = 'hello';
+          router.add(route, function () {}, name);
+          spread(function (keys, splat) {
+            var result = router.reverse(name, keys, splat);
+            expect(result).to.equal(path);
+          })(matches[path]);
+        });
+      });
+    }));
+  });
   describe('resolve', function () {
-    var goodExamples = [
-      ['/', ['$'], {'/': [{}, null]}],
-      ['/*', ['*'], {
-        '/foo': [{}, 'foo'],
-        '/bar': [{}, 'bar'],
-        '/foo/bar/qux': [{}, 'foo/bar/qux'],
-        '/foo/': [{}, 'foo'],
-        '/bar/': [{}, 'bar'],
-        '/foo/bar/qux/': [{}, 'foo/bar/qux']
-      }],
-      ['/:foo', [':', '$'], {
-        '/foo': [{foo: 'foo'}, null],
-        '/bar': [{foo: 'bar'}, null],
-        '/qux': [{foo: 'qux'}, null],
-        '/foo/': [{foo: 'foo'}, null],
-        '/bar/': [{foo: 'bar'}, null],
-        '/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/:foo/', [':', '$'], {
-        '/foo': [{foo: 'foo'}, null],
-        '/bar': [{foo: 'bar'}, null],
-        '/qux': [{foo: 'qux'}, null],
-        '/foo/': [{foo: 'foo'}, null],
-        '/bar/': [{foo: 'bar'}, null],
-        '/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/qux', ['"qux', '$'], {
-        '/qux': [{}, null],
-        '/qux/': [{}, null]
-      }],
-      ['/qux/', ['"qux', '$'], {
-        '/qux': [{}, null],
-        '/qux/': [{}, null]
-      }],
-      ['/qux/*', ['"qux', '*'], {
-        '/qux/foo': [{}, 'foo'],
-        '/qux/bar': [{}, 'bar'],
-        '/qux/foo/bar/qux': [{}, 'foo/bar/qux'],
-        '/qux/foo/': [{}, 'foo'],
-        '/qux/bar/': [{}, 'bar'],
-        '/qux/foo/bar/qux/': [{}, 'foo/bar/qux']
-      }],
-      ['/qux/foo', ['"qux', '"foo', '$'], {
-        '/qux/foo': [{}, null],
-        '/qux/foo/': [{}, null]
-      }],
-      ['/qux/foo/', ['"qux', '"foo', '$'], {
-        '/qux/foo': [{}, null],
-        '/qux/foo/': [{}, null]
-      }],
-      ['/qux/:foo', ['"qux', ':', '$'], {
-        '/qux/foo': [{foo: 'foo'}, null],
-        '/qux/bar': [{foo: 'bar'}, null],
-        '/qux/qux': [{foo: 'qux'}, null],
-        '/qux/foo/': [{foo: 'foo'}, null],
-        '/qux/bar/': [{foo: 'bar'}, null],
-        '/qux/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/qux/:foo/', ['"qux', ':', '$'], {
-        '/qux/foo': [{foo: 'foo'}, null],
-        '/qux/bar': [{foo: 'bar'}, null],
-        '/qux/qux': [{foo: 'qux'}, null],
-        '/qux/foo/': [{foo: 'foo'}, null],
-        '/qux/bar/': [{foo: 'bar'}, null],
-        '/qux/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/:qux/*', [':', '*'], {
-        '/qux/foo': [{qux: 'qux'}, 'foo'],
-        '/qux/bar': [{qux: 'qux'}, 'bar'],
-        '/qux/foo/bar/qux': [{qux: 'qux'}, 'foo/bar/qux'],
-        '/qux/foo/': [{qux: 'qux'}, 'foo'],
-        '/qux/bar/': [{qux: 'qux'}, 'bar'],
-        '/qux/foo/bar/qux/': [{qux: 'qux'}, 'foo/bar/qux']
-      }],
-      ['/:qux/foo', [':', '"foo', '$'], {
-        '/qux/foo': [{qux: 'qux'}, null],
-        '/qux/foo/': [{qux: 'qux'}, null]
-      }],
-      ['/:qux/foo/', [':', '"foo', '$'], {
-        '/qux/foo': [{qux: 'qux'}, null],
-        '/qux/foo/': [{qux: 'qux'}, null]
-      }],
-      ['/:qux/:foo', [':', ':', '$'], {
-        '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux': [{qux: 'qux', foo: 'qux'}, null],
-        '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
-      }],
-      ['/:qux/:foo/', [':', ':', '$'], {
-        '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux': [{qux: 'qux', foo: 'qux'}, null],
-        '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
-      }],
-      ['/:foo/:foo', [':', ':', '$'], {
-        '/qux/foo': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux': [{foo: ['qux', 'qux']}, null],
-        '/qux/foo/': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar/': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux/': [{foo: ['qux', 'qux']}, null]
-      }],
-      ['/:foo/:foo/', [':', ':', '$'], {
-        '/qux/foo': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux': [{foo: ['qux', 'qux']}, null],
-        '/qux/foo/': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar/': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux/': [{foo: ['qux', 'qux']}, null]
-      }]
-    ];
     goodExamples.forEach(spread(function (route, tokens, matches) {
       Object.keys(matches).forEach(function (path) {
         it(route + ' matches ' + path, function () {
@@ -241,88 +256,102 @@ describe('rote(true)', function () {
   beforeEach(function () {
     router = rote(true);
   });
+  var goodExamples = [
+    ['/', ['$'], {'/': [{}, null]}],
+    ['/*', ['*'], {
+      '/foo': [{}, 'foo'],
+      '/bar': [{}, 'bar'],
+      '/foo/bar/qux': [{}, 'foo/bar/qux'],
+      '/foo/': [{}, 'foo/'],
+      '/bar/': [{}, 'bar/'],
+      '/foo/bar/qux/': [{}, 'foo/bar/qux/']
+    }],
+    ['/:foo', [':', '$'], {
+      '/foo': [{foo: 'foo'}, null],
+      '/bar': [{foo: 'bar'}, null],
+      '/qux': [{foo: 'qux'}, null]
+    }],
+    ['/:foo/', [':', '"/', '$'], {
+      '/foo/': [{foo: 'foo'}, null],
+      '/bar/': [{foo: 'bar'}, null],
+      '/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/qux', ['"qux', '$'], {'/qux': [{}, null]}],
+    ['/qux/', ['"qux', '"/', '$'], {'/qux/': [{}, null]}],
+    ['/qux/*', ['"qux', '*'], {
+      '/qux/foo': [{}, 'foo'],
+      '/qux/bar': [{}, 'bar'],
+      '/qux/foo/bar/qux': [{}, 'foo/bar/qux'],
+      '/qux/foo/': [{}, 'foo/'],
+      '/qux/bar/': [{}, 'bar/'],
+      '/qux/foo/bar/qux/': [{}, 'foo/bar/qux/']
+    }],
+    ['/qux/foo', ['"qux', '"foo', '$'], {
+      '/qux/foo': [{}, null]
+    }],
+    ['/qux/foo/', ['"qux', '"foo', '"/', '$'], {
+      '/qux/foo/': [{}, null]
+    }],
+    ['/qux/:foo', ['"qux', ':', '$'], {
+      '/qux/foo': [{foo: 'foo'}, null],
+      '/qux/bar': [{foo: 'bar'}, null],
+      '/qux/qux': [{foo: 'qux'}, null]
+    }],
+    ['/qux/:foo/', ['"qux', ':', '"/', '$'], {
+      '/qux/foo/': [{foo: 'foo'}, null],
+      '/qux/bar/': [{foo: 'bar'}, null],
+      '/qux/qux/': [{foo: 'qux'}, null]
+    }],
+    ['/:qux/*', [':', '*'], {
+      '/qux/foo': [{qux: 'qux'}, 'foo'],
+      '/qux/bar': [{qux: 'qux'}, 'bar'],
+      '/qux/foo/bar/qux': [{qux: 'qux'}, 'foo/bar/qux'],
+      '/qux/foo/': [{qux: 'qux'}, 'foo/'],
+      '/qux/bar/': [{qux: 'qux'}, 'bar/'],
+      '/qux/foo/bar/qux/': [{qux: 'qux'}, 'foo/bar/qux/']
+    }],
+    ['/:qux/foo', [':', '"foo', '$'], {
+      '/qux/foo': [{qux: 'qux'}, null]
+    }],
+    ['/:qux/foo/', [':', '"foo', '"/', '$'], {
+      '/qux/foo/': [{qux: 'qux'}, null]
+    }],
+    ['/:qux/:foo', [':', ':', '$'], {
+      '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux': [{qux: 'qux', foo: 'qux'}, null]
+    }],
+    ['/:qux/:foo/', [':', ':', '"/', '$'], {
+      '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
+      '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
+      '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
+    }],
+    ['/:foo/:foo', [':', ':', '$'], {
+      '/qux/foo': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux': [{foo: ['qux', 'qux']}, null]
+    }],
+    ['/:foo/:foo/', [':', ':', '"/', '$'], {
+      '/qux/foo/': [{foo: ['qux', 'foo']}, null],
+      '/qux/bar/': [{foo: ['qux', 'bar']}, null],
+      '/qux/qux/': [{foo: ['qux', 'qux']}, null]
+    }]
+  ];
+  describe('reverse', function () {
+    goodExamples.forEach(spread(function (route, tokens, matches) {
+      Object.keys(matches).forEach(function (path) {
+        it(route + ' reverses to ' + path, function () {
+          var name = 'hello';
+          router.add(route, function () {}, name);
+          spread(function (keys, splat) {
+            var result = router.reverse(name, keys, splat);
+            expect(result).to.equal(path);
+          })(matches[path]);
+        });
+      });
+    }));
+  });
   describe('resolve', function () {
-    var goodExamples = [
-      ['/', ['$'], {'/': [{}, null]}],
-      ['/*', ['*'], {
-        '/foo': [{}, 'foo'],
-        '/bar': [{}, 'bar'],
-        '/foo/bar/qux': [{}, 'foo/bar/qux'],
-        '/foo/': [{}, 'foo/'],
-        '/bar/': [{}, 'bar/'],
-        '/foo/bar/qux/': [{}, 'foo/bar/qux/']
-      }],
-      ['/:foo', [':', '$'], {
-        '/foo': [{foo: 'foo'}, null],
-        '/bar': [{foo: 'bar'}, null],
-        '/qux': [{foo: 'qux'}, null]
-      }],
-      ['/:foo/', [':', '"/', '$'], {
-        '/foo/': [{foo: 'foo'}, null],
-        '/bar/': [{foo: 'bar'}, null],
-        '/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/qux', ['"qux', '$'], {'/qux': [{}, null]}],
-      ['/qux/', ['"qux', '"/', '$'], {'/qux/': [{}, null]}],
-      ['/qux/*', ['"qux', '*'], {
-        '/qux/foo': [{}, 'foo'],
-        '/qux/bar': [{}, 'bar'],
-        '/qux/foo/bar/qux': [{}, 'foo/bar/qux'],
-        '/qux/foo/': [{}, 'foo/'],
-        '/qux/bar/': [{}, 'bar/'],
-        '/qux/foo/bar/qux/': [{}, 'foo/bar/qux/']
-      }],
-      ['/qux/foo', ['"qux', '"foo', '$'], {
-        '/qux/foo': [{}, null]
-      }],
-      ['/qux/foo/', ['"qux', '"foo', '"/', '$'], {
-        '/qux/foo/': [{}, null]
-      }],
-      ['/qux/:foo', ['"qux', ':', '$'], {
-        '/qux/foo': [{foo: 'foo'}, null],
-        '/qux/bar': [{foo: 'bar'}, null],
-        '/qux/qux': [{foo: 'qux'}, null]
-      }],
-      ['/qux/:foo/', ['"qux', ':', '"/', '$'], {
-        '/qux/foo/': [{foo: 'foo'}, null],
-        '/qux/bar/': [{foo: 'bar'}, null],
-        '/qux/qux/': [{foo: 'qux'}, null]
-      }],
-      ['/:qux/*', [':', '*'], {
-        '/qux/foo': [{qux: 'qux'}, 'foo'],
-        '/qux/bar': [{qux: 'qux'}, 'bar'],
-        '/qux/foo/bar/qux': [{qux: 'qux'}, 'foo/bar/qux'],
-        '/qux/foo/': [{qux: 'qux'}, 'foo/'],
-        '/qux/bar/': [{qux: 'qux'}, 'bar/'],
-        '/qux/foo/bar/qux/': [{qux: 'qux'}, 'foo/bar/qux/']
-      }],
-      ['/:qux/foo', [':', '"foo', '$'], {
-        '/qux/foo': [{qux: 'qux'}, null]
-      }],
-      ['/:qux/foo/', [':', '"foo', '"/', '$'], {
-        '/qux/foo/': [{qux: 'qux'}, null]
-      }],
-      ['/:qux/:foo', [':', ':', '$'], {
-        '/qux/foo': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux': [{qux: 'qux', foo: 'qux'}, null]
-      }],
-      ['/:qux/:foo/', [':', ':', '"/', '$'], {
-        '/qux/foo/': [{qux: 'qux', foo: 'foo'}, null],
-        '/qux/bar/': [{qux: 'qux', foo: 'bar'}, null],
-        '/qux/qux/': [{qux: 'qux', foo: 'qux'}, null]
-      }],
-      ['/:foo/:foo', [':', ':', '$'], {
-        '/qux/foo': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux': [{foo: ['qux', 'qux']}, null]
-      }],
-      ['/:foo/:foo/', [':', ':', '"/', '$'], {
-        '/qux/foo/': [{foo: ['qux', 'foo']}, null],
-        '/qux/bar/': [{foo: ['qux', 'bar']}, null],
-        '/qux/qux/': [{foo: ['qux', 'qux']}, null]
-      }]
-    ];
     goodExamples.forEach(spread(function (route, tokens, matches) {
       Object.keys(matches).forEach(function (path) {
         spread(function (params, splat) {

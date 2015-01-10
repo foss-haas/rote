@@ -34,6 +34,7 @@ createRouter.methods = {
         route.params.join(', ')
       );
     }
+    var times = {};
     var tokens = this.parse(route.path);
     if (tokens[tokens.length - 1] === '*') {
       if (!splat) throw new Error('Unmet wildcard.');
@@ -42,6 +43,10 @@ createRouter.methods = {
       if (token.charAt(0) === ':') {
         token = token.slice(1);
         if (!params[token]) throw new Error('Mising parameter: ' + token);
+        if (Array.isArray(params[token])) {
+          times[token] = (times[token] || 0) + 1;
+          return params[token][times[token] - 1];
+        }
         return params[token];
       }
       if (token === '*') return splat;
