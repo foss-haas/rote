@@ -1,6 +1,6 @@
 {
   "name": "rote",
-  "version": "0.1.2",
+  "version": "1.0.0",
   "description": "Simple isomorphic routing library.",
   "main": "index.js",
   "keywords": [
