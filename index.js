@@ -11,8 +11,9 @@ function createRouter(trailing) {
   resolve.routeMap = {};
   resolve.routeNames = {};
   for (var key in createRouter.methods) {
-    if (!createRouter.methods.hasOwnProperty(key)) continue;
-    resolve[key] = createRouter.methods[key];
+    if (createRouter.methods.hasOwnProperty(key)) {
+      resolve[key] = createRouter.methods[key];
+    }
   }
   return resolve;
 }
