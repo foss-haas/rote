@@ -34,7 +34,7 @@ router.add('/:foo/:bar', views.fooBar, 'foo.bar');
 var path = router.reverse('foo.bar', {foo: 'lorem', bar: 'ipsum'});
 // => "/lorem/ipsum"
 router.add('/:foo/:qux', views.fooQux);
-var route = router.resolve('/hello/world');
+var route = router.resolve('/hello/world'); // or: router('/hello/world');
 /* => {
     "fn": views.fooBar,
     "name": "foo.bar",

@@ -22,7 +22,7 @@ createRouter.methods = {
   parse: function parse(path) {
     var trailing = this.trailing && path.charAt(path.length - 1) === '/';
     var tokens = path.split('/').filter(Boolean);
-    if (trailing) tokens.push('/');
+    if (trailing && tokens.length) tokens.push('/');
     return tokens;
   },
   reverse: function reverse(name, params, splat) {
@@ -107,15 +107,18 @@ createRouter.methods = {
     }
     var result = [];
     var token = tokens[0];
-    tokens = tokens.slice(1);
     if (map['"' + token]) {
-      result.push.apply(result, this._resolve(map['"' + token], tokens, params));
+      result.push.apply(result, this._resolve(map['"' + token], tokens.slice(1), params));
     }
-    if (token !== '/' && map[':']) {
-      result.push.apply(result, this._resolve(map[':'], tokens, params.concat(token)));
-    }
-    if (!tokens.length && map['*']) {
-      result.push.apply(result, map['*'].map(this._routeToMatch(params, token)));
+    if (token !== '/') {
+      if (map[':']) {
+        result.push.apply(result, this._resolve(map[':'], tokens.slice(1), params.concat(token)));
+      }
+      if (map['*']) {
+        result.push.apply(result, map['*'].map(this._routeToMatch(params, (
+          tokens[tokens.length - 1] === '/' ? tokens.slice(0, -1).concat('') : tokens
+        ).join('/'))));
+      }
     }
     return result;
   },
@@ -123,7 +126,8 @@ createRouter.methods = {
     return function (route) {
       var namedParams = {};
       route.params.forEach(function (name, i) {
-        namedParams[name] = params[i];
+        if (!namedParams[name]) namedParams[name] = params[i];
+        else namedParams[name] = [namedParams[name], params[i]];
       });
       return {
         fn: route.fn,
