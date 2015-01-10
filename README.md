@@ -8,7 +8,7 @@
 
 [![NPM status](https://nodei.co/npm/rote.png?compact=true)](https://www.npmjs.com/package/rote)
 
-[![Build status](https://img.shields.io/travis/foss-haas/rote.svg)](https://travis-ci.org/foss-haas/rote) [![Coverage status](https://img.shields.io/coveralls/foss-haas/rote.svg)](https://coveralls.io/r/foss-haas/rote?branch=master) [![Codacy rating](https://img.shields.io/codacy/???.svg)](https://www.codacy.com/public/me_4/rote)
+[![Build status](https://img.shields.io/travis/foss-haas/rote.svg)](https://travis-ci.org/foss-haas/rote) [![Coverage status](https://img.shields.io/coveralls/foss-haas/rote.svg)](https://coveralls.io/r/foss-haas/rote?branch=master) [![Codacy rating](https://img.shields.io/codacy/235d77e8bfe041c8b1bb63e1c1b50d65.svg)](https://www.codacy.com/public/me_4/rote)
 
 # Install
 
