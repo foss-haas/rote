@@ -27,6 +27,25 @@ describe('rote()', function () {
   beforeEach(function () {
     router = rote();
   });
+  describe('add with name', function () {
+    it('registers the named route', function () {
+      var handler = function () {};
+      var name = 'foo';
+      router.add('/path', handler, name);
+      var route = router.routeNames[name];
+      expect(route).to.be.ok();
+      expect(route.fn).to.equal(handler);
+    });
+    it('throws an error if the name is already taken', function () {
+      var name = 'qux';
+      router.add('/path', function () {}, name);
+      expect(function () {
+        router.add('/foo', function () {}, name);
+      }).to.throwError(function (e) {
+        expect(e.message).to.contain(name);
+      });
+    });
+  });
   describe('resolve', function () {
     var goodExamples = [
       ['/', ['$'], {'/': [{}, null]}],
