@@ -76,7 +76,7 @@ If `name` is not empty, the route can also be reversed. If a route with the give
 
 The `path` is expected to consist of zero or more parts delimited by slashes.
 
-Redundant slashes (e.g. `/foo//bar` becomes `/foo/bar`) will be ignored. If the router does not respect trailing slashes, any trailing slashes will also be ignored (e.g. `/foo/` becomes `/foo`).
+Redundant slashes will be ignored (e.g. `/foo//bar` becomes `/foo/bar`). If the router does not respect trailing slashes, any trailing slashes will also be ignored (e.g. `/foo/` becomes `/foo`).
 
 Parts starting with a colon (e.g. `/:foo`) will be treated as parameter names and match any non-empty string that does not contain a slash.
 
