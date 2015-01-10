@@ -46,6 +46,25 @@ describe('rote()', function () {
       });
     });
   });
+  describe('resolve next', function () {
+    it('returns matches in the correct order', function () {
+      var handler1 = function () {};
+      var handler2 = function () {};
+      var path = '/path';
+      router.add(path, handler1);
+      router.add(path, handler2);
+      var result = router.resolve(path);
+      expect(result).to.be.ok();
+      expect(result.fn).to.be(handler1);
+      expect(result.next).to.be.a('function');
+      result = result.next();
+      expect(result).to.be.ok();
+      expect(result.fn).to.be(handler2);
+      expect(result.next).to.be.a('function');
+      result = result.next();
+      expect(result).to.be(null);
+    });
+  });
   describe('resolve', function () {
     var goodExamples = [
       ['/', ['$'], {'/': [{}, null]}],
