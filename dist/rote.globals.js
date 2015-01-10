@@ -67,11 +67,11 @@ createRouter.methods = {
     if (tokens[tokens.length - 1] !== '*') tokens.push(null);
     for (var i = 0; i < tokens.length; i++) {
       var token = tokens[i];
-      if (token !== '/' && token !== '*') {
+      if (token !== '*') {
         if (token === null) {
           token = '$';
         } else if (token.charAt(0) === ':') {
-          var key = token.slice(0);
+          var key = token.slice(1);
           if (!key || key === '*') throw new Error('Invalid parameter name.');
           route.params.push(key);
           token = ':';
@@ -86,21 +86,57 @@ createRouter.methods = {
         break;
       }
       if (token === '*') throw new Error('Only trailing wildcards are supported.');
-      if (!map[token]) map[token] = {'^': map};
+      if (!map[token]) map[token] = {};
       map = map[token];
     }
     return this;
   },
-  resolve: function resolve(/* path */) {
-    // var match = {
-    //   fn: null,
-    //   name: null,
-    //   params: {},
-    //   splat: null
-    //   next: null,
-    // };
+  resolve: function resolve(path) {
+    var tokens = this.parse(path);
+    var result = this._resolve(this.routeMap, tokens, [], null);
+    if (!result.length) return null;
+    result.forEach(function (route) {
+      route.next = function next() {
+        return result.shift() || null;
+      };
+    });
+    return result.shift();
+  },
+  _resolve: function _resolve(map, tokens, params) {
+    if (!tokens.length) {
+      if (!map['$']) return [];
+      return map['$'].map(this._routeToMatch(params, null));
+    }
+    var result = [];
+    var token = tokens[0];
+    tokens = tokens.slice(1);
+    if (map['"' + token]) {
+      result.push.apply(result, this._resolve(map['"' + token], tokens, params));
+    }
+    if (token !== '/' && map[':']) {
+      result.push.apply(result, this._resolve(map[':'], tokens, params.concat(token)));
+    }
+    if (!tokens.length && map['*']) {
+      result.push.apply(result, map['*'].map(this._routeToMatch(params, token)));
+    }
+    return result;
+  },
+  _routeToMatch: function _routeToMatch(params, splat) {
+    return function (route) {
+      var namedParams = {};
+      route.params.forEach(function (name, i) {
+        namedParams[name] = params[i];
+      });
+      return {
+        fn: route.fn,
+        name: route.name,
+        params: namedParams,
+        splat: splat
+      };
+    };
   }
 };
+
 }(function(key){return root[key];}, module.exports, module));
 root.rote = module.exports;
 }(this));
