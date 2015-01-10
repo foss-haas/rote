@@ -8,9 +8,17 @@ var rote = require('../');
 describe('rote', function () {
   it('is a function', function () {
     expect(rote).to.be.a('function');
-  });
-  it('returns a function', function () {
     expect(rote()).to.be.a('function');
+  });
+  it('returns a router', function () {
+    var expectedArg = 'foo';
+    var actualArg = null;
+    var router = rote();
+    router.resolve = function (arg) {
+      actualArg = arg;
+    };
+    router(expectedArg);
+    expect(actualArg).to.be(expectedArg);
   });
 });
 
